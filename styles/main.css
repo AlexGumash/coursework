@@ -1,8 +1,6 @@
 @import 'reset.css';
 @import 'header.css';
-@import 'footer.css';
 @import 'container-main.css';
-@import 'popular.css';
 
 body{
   font-family: 'Montserrat', sans-serif;
@@ -17,7 +15,4 @@ body{
 
 .container-main {
   padding-top: 30px;
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
 }

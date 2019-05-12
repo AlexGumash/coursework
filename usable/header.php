@@ -17,7 +17,7 @@
         <li class="menu-item">
           <a href="entry.php">
             <div class="menu-item-link">
-              <?php echo $user['login'] . "<span style='color: rgb(255, 229, 133); font-weight: bold'> Выход</span>"?>
+              <?php echo $_SESSION['login'] . "<span style='color: rgb(255, 229, 133); font-weight: bold'> Выход</span>"?>
             </div>
           </a>
         </li>

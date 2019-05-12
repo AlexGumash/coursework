@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <?php include 'database/connection.php' ?>
 <?php
   if (isset($_REQUEST['submit-button-registration'])) {
@@ -15,6 +16,9 @@
       $query = "SELECT * FROM users WHERE login = '$login' AND password = '$hash_pass'";
       $result = mysql_query($query);
       $user = mysql_fetch_array($result, MYSQL_ASSOC);
+      $_SESSION['login'] = $login;
+      $_SESSION['password'] = $hash_pass;
+      $_SESSION['rights'] = $user['rights'];
     }
   }
 
@@ -26,8 +30,16 @@
     $query = "SELECT * FROM users WHERE login = '$login' AND password = '$hash_pass'";
     $result = mysql_query($query);
     $user = mysql_fetch_array($result, MYSQL_ASSOC);
-
+    $_SESSION['login'] = $login;
+    $_SESSION['password'] = $hash_pass;
+    $_SESSION['rights'] = $user['rights'];
   }
+  if (!$_SESSION['login']) {
+    header('Location: entry.php');
+    session_destroy();
+  }
+
+
 ?>
 
 <!DOCTYPE html>
@@ -38,6 +50,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="styles/main.css">
   <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
   <title>DataBase</title>
 </head>
 <body>
@@ -46,11 +59,43 @@
     <div class="container container-main">
 
       <div class="query-container">
-        <span>Введите запрос</span>
-        <input id="query-input" type="text">
-        <div class="query-button">
-          <span>Выполнить запрос</span>
-        </div>
+        <form action="index.php" method="post">
+          <div class="query-input-div">
+            <span>Введите запрос</span>
+            <input name="query-input" type="text" class="query-input" required>
+          </div>
+          <input type="submit" name="query-submit" class="query-button" value="Выполнить">
+        </form>
+      </div>
+
+      <div class="result-container">
+        <?php
+          if (isset($_REQUEST['query-submit'])) {
+            $query = $_REQUEST['query-input'];
+            $query_type = explode(' ',trim($query));
+
+            if (($_SESSION['rights'] == 'user' && $query_type[0] == 'SELECT') || $_SESSION['rights'] == 'admin') {
+
+              if (!($query_result = mysql_query($query))) {
+                echo "<span style='padding-left: 10px; font-weight: bold;'>Ошибка в запросе!</span>";
+              } else {
+                if ($query_type[0] == 'SELECT') {
+                  $i = 1;
+                  while ($fetched_item = mysql_fetch_array($query_result, MYSQL_ASSOC)) {
+                    echo "<span class='item'>Запись $i</span>";
+                    include 'fetched_item.php';
+                    $i = $i + 1;
+                  }
+                } else {
+                  echo "<span style='padding-left: 10px; font-weight: bold;'>Запрос успешно выполнен!</span>";
+                }
+              }
+            } else {
+              echo "<span style='padding-left: 10px; font-weight: bold;'>Не достаточно прав!</span>";
+            }
+
+          }
+        ?>
       </div>
 
     </div>
