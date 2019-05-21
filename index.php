@@ -11,11 +11,11 @@
     if ($password == $password_confirm) {
       $hash_pass = hash('md5', $password);
       $query = "INSERT INTO users (id, name, surname, login, password, rights) VALUES (NULL, '$name', '$surname', '$login', '$hash_pass', 'user')";
-      $result = mysql_query($query);
+      $result = mysqli_query($date, $query);
 
       $query = "SELECT * FROM users WHERE login = '$login' AND password = '$hash_pass'";
-      $result = mysql_query($query);
-      $user = mysql_fetch_array($result, MYSQL_ASSOC);
+      $result = mysqli_query($date, $query);
+      $user = mysqli_fetch_array($result, MYSQL_ASSOC);
       $_SESSION['login'] = $login;
       $_SESSION['password'] = $hash_pass;
       $_SESSION['rights'] = $user['rights'];
@@ -28,8 +28,8 @@
     $hash_pass = hash('md5', $password);
 
     $query = "SELECT * FROM users WHERE login = '$login' AND password = '$hash_pass'";
-    $result = mysql_query($query);
-    $user = mysql_fetch_array($result, MYSQL_ASSOC);
+    $result = mysqli_query($date, $query);
+    $user = mysqli_fetch_array($result, MYSQL_ASSOC);
     $_SESSION['login'] = $login;
     $_SESSION['password'] = $hash_pass;
     $_SESSION['rights'] = $user['rights'];
@@ -74,14 +74,17 @@
             $query = $_REQUEST['query-input'];
             $query_type = explode(' ',trim($query));
 
+            $query = htmlspecialchars($query);
+            $query = mysqli_real_escape_string($date, $query);
+
             if (($_SESSION['rights'] == 'user' && $query_type[0] == 'SELECT') || $_SESSION['rights'] == 'admin') {
 
-              if (!($query_result = mysql_query($query))) {
+              if (!($query_result = mysqli_query($date, $query))) {
                 echo "<span style='padding-left: 10px; font-weight: bold;'>Ошибка в запросе!</span>";
               } else {
                 if ($query_type[0] == 'SELECT') {
                   $i = 1;
-                  while ($fetched_item = mysql_fetch_array($query_result, MYSQL_ASSOC)) {
+                  while ($fetched_item = mysqli_fetch_array($query_result, MYSQL_ASSOC)) {
                     echo "<span class='item'>Запись $i</span>";
                     include 'fetched_item.php';
                     $i = $i + 1;
