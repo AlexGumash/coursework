@@ -8,7 +8,7 @@
     <div class="menu-container">
       <ul class="menu">
         <li class="menu-item">
-          <a href="#">
+          <a href="../index.php">
             <div class="menu-item-link">
               Сделать запрос
             </div>

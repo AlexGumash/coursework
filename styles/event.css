@@ -1,0 +1,45 @@
+.event-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.about-event, .track, .results {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 60%;
+  margin-bottom: 40px;
+}
+
+.car, .result {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.result {
+  margin-bottom: 0;
+}
+
+.button {
+  margin-bottom: 30px;
+}
+
+.about-item, .track-item, .results-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: rgb(250, 250, 250);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.about-item-text, .track-item-text, .results-item-text {
+  display: flex;
+  justify-content: flex-start;
+  width:40%;
+}

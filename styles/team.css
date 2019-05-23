@@ -1,0 +1,47 @@
+.team-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 60%;
+}
+
+.form {
+  width: 60%;
+}
+
+.about-team, .cars, .students {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.car, .student {
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.about-item, .car-item, .student-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: rgb(250, 250, 250);
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.about-item-text, .car-item-text, .student-item-text {
+  display: flex;
+  justify-content: flex-start;
+  width:40%;
+}
+
+.button {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}

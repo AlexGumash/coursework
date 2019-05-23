@@ -1,6 +1,8 @@
 @import 'reset.css';
 @import 'header.css';
 @import 'container-main.css';
+@import 'team.css';
+@import 'event.css';
 
 body{
   font-family: 'Montserrat', sans-serif;
@@ -15,4 +17,7 @@ body{
 
 .container-main {
   padding-top: 30px;
+  display: flex;
+  flex-direction: row;
+  color: black;
 }
