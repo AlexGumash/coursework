@@ -14,34 +14,37 @@
             </div>
           </a>
         </li>
+        <?php
+        if ($_SESSION['rights'] == 'moder' || $_SESSION['rights'] == 'admin') {
+          ?>
+          <li class="menu-item">
+            <a href="../admin/admin.php">
+              <div class="menu-item-link">
+                Админинстрирование
+              </div>
+            </a>
+          </li>
+          <?php
+        } else {
+          ?>
+          <li class="menu-item">
+            <a href="../user/personal.php?content=about">
+              <div class="menu-item-link">
+                Личный кабинет
+              </div>
+            </a>
+          </li>
+          <?php
+        }
+        ?>
         <li class="menu-item">
-          <a href="entry.php">
+          <a href="../entry.php">
             <div class="menu-item-link">
               <?php echo $_SESSION['login'] . "<span style='color: rgb(255, 229, 133); font-weight: bold'> Выход</span>"?>
             </div>
           </a>
         </li>
-        <!-- <li class="menu-item">
-          <a href="../posts_travel/index.php">
-            <div class="menu-item-link">
-              Путешествия
-            </div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="../posts_useful/index.php">
-            <div class="menu-item-link">
-              Полезное
-            </div>
-          </a>
-        </li>
-        <li class="menu-item">
-          <a href="../posts_interesting/index.php">
-            <div class="menu-item-link">
-              Интересное
-            </div>
-          </a>
-        </li> -->
+
       </ul>
     </div>
 

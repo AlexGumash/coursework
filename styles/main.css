@@ -3,6 +3,10 @@
 @import 'container-main.css';
 @import 'team.css';
 @import 'event.css';
+@import 'check_requests.css';
+@import 'personal.css';
+@import 'admin.css';
+@import 'ruleTeams.css';
 
 body{
   font-family: 'Montserrat', sans-serif;

@@ -18,13 +18,12 @@
       function updateTeam(id){
         var name = $("input[name='team-name']").val()
         var uni = $("input[name='team-uni']").val()
-        var category = $("input[name='team-category']").val()
-        var leader = $("input[name='team-leader']").val()
+        var category = $("select[name='team-category']").val()
 
         $.ajax({
           type: "post",
           url: "update/update_team.php",
-          data: {team_id: id, team_name: name, team_uni: uni, team_leader: leader, team_category: category}
+          data: {team_id: id, team_name: name, team_uni: uni, team_category: category}
         }).done(function(result){
           location.reload();
         })
@@ -39,20 +38,22 @@
           url: "update/update_car.php",
           data: {car_id: id, car_name: name, car_year: year}
         }).done(function(result){
-          location.reload();
+          console.log(result);
+          // location.reload();
         })
       }
 
       function updateStudent(id){
         var name = $("input[name='student-name']").val()
-        var course = $("input[name='student-course']").val()
-        var faculty = $("input[name='student-faculty']").val()
+        var login = $("input[name='login']").val()
+        var roler = $("select[name='role']").val()
 
         $.ajax({
           type: "post",
           url: "update/update_student.php",
-          data: {student_id: id, student_name: name, student_faculty: faculty, student_course: course}
+          data: {student_id: id, student_name: name, role: roler, student_login: login}
         }).done(function(result){
+          console.log(result);
           location.reload();
         })
       }
@@ -67,18 +68,19 @@
       $query = "SELECT * FROM team WHERE id = '$id'";
       $result = mysqli_query($date, $query);
       $team = mysqli_fetch_array($result, MYSQL_ASSOC);
+      echo mysqli_error($date);
 
       $team_name = $team['team_name'];
       $uni = $team['university'];
       $category = $team['category'];
-      $leader = $team['teamleader_surname'] . " " . $team['teamleader_name'] . " " . $team['teamleader_patronymic'];
+      // $leader = $team['teamleader_surname'] . " " . $team['teamleader_name'] . " " . $team['teamleader_patronymic'];
       ?>
       <div class="team-container">
           <div class="about-team">
             <span style="font-size: 20px; margin-bottom: 20px; margin-top: 10px; font-weight: bold">О команде</span>
             <div class="name about-item">
               <?php
-              if (!is_admin()) {
+              if (!can_modify($team['teamleader_id'], $_SESSION['user_id'], $_SESSION['role'])) {
                 ?>
                 <span>Название команды: </span>
                 <span class="about-item-text"><?php echo $team_name ?> </span>
@@ -93,7 +95,7 @@
             </div>
             <div class="uni about-item">
               <?php
-              if (!is_admin()) {
+              if (!can_modify($team['teamleader_id'], $_SESSION['user_id'], $_SESSION['role'])) {
                 ?>
                 <span>Университет: </span>
                 <span class="about-item-text"><?php echo $uni ?> </span>
@@ -108,7 +110,7 @@
             </div>
             <div class="category about-item">
               <?php
-              if (!is_admin()) {
+              if (!can_modify($team['teamleader_id'], $_SESSION['user_id'], $_SESSION['role'])) {
                 ?>
                 <span>Категория: </span>
                 <span class="about-item-text"><?php echo $category ?> </span>
@@ -116,29 +118,18 @@
               } else {
                 ?>
                 <span>Категория: </span>
-                <input class="about-item-text" type="text" name="team-category" value="<?php echo $category; ?>">
-                <?php
-              }
-              ?>
-            </div>
-            <div class="leader about-item">
-              <?php
-              if (!is_admin()) {
-                ?>
-                <span>Руководитель: </span>
-                <span class="about-item-text"><?php echo $leader ?> </span>
-                <?php
-              } else {
-                ?>
-                <span>Руководитель: </span>
-                <input class="about-item-text" type="text" name="team-leader" value="<?php echo $leader; ?>">
+                <select class="about-item-text" name="team-category">
+                  <option value="ДВС">ДВС</option>
+                  <option value="Электрик">Электрик</option>
+                </select>
                 <?php
               }
               ?>
             </div>
 
+
             <?php
-            if (is_admin()) { ?>
+            if (can_modify($team['teamleader_id'], $_SESSION['user_id'], $_SESSION['role'])) { ?>
               <div class="button" onclick="updateTeam(<?php echo $team['id']; ?>)">
                 <input type="submit" name="submit-button-about" value="Применить">
               </div>
@@ -161,7 +152,7 @@
               <div class="car">
                 <div class="car-item">
                   <?php
-                  if (!is_admin()) {
+                  if (!can_modify($team['teamleader_id'], $_SESSION['user_id'], $_SESSION['role'])) {
                     ?>
                     <span>Название: </span>
                     <span class="car-item-text"><?php echo $name ?> </span>
@@ -176,7 +167,7 @@
                 </div>
                 <div class="car-item">
                   <?php
-                  if (!is_admin()) {
+                  if (!can_modify($team['teamleader_id'], $_SESSION['user_id'], $_SESSION['role'])) {
                     ?>
                     <span>Год постройки: </span>
                     <span class="car-item-text"><?php echo $year ?> </span>
@@ -191,7 +182,7 @@
                 </div>
               </div>
               <?php
-              if (is_admin()) {
+              if (can_modify($team['teamleader_id'], $_SESSION['user_id'], $_SESSION['role'])) {
                 ?>
                 <div class="button" onclick="updateCar(<?php echo $car['id']; ?>)">
                 <input type="submit" name="submit-button-car" value="Применить">
@@ -207,13 +198,14 @@
         <div class="students">
           <span style="font-size: 20px; margin-bottom: 20px; margin-top: 10px; font-weight: bold">Состав команды</span>
           <?php
-            $query = "SELECT * FROM student WHERE team_name = '$team_name'";
+            $team_id = $_REQUEST['id'];
+            $query = "SELECT * FROM users WHERE team_id = '$team_id'";
             $result = mysqli_query($date, $query);
 
             while ($student = mysqli_fetch_array($result, MYSQL_ASSOC)) {
               $name = $student['surname'] . " " . $student['name'] . " " . $student['patronymic'];
-              $course = $student['course'];
-              $faculty = $student['faculty'];
+              $login = $student['login'];
+              $role = $student['role'];
           ?>
             <div class="student">
               <div class="student-item">
@@ -235,13 +227,13 @@
                 <?php
                 if (!is_admin()) {
                   ?>
-                  <span>Курс: </span>
-                  <span class="student-item-text"><?php echo $course ?> </span>
+                  <span>Логин: </span>
+                  <span class="student-item-text"><?php echo $login ?> </span>
                   <?php
                 } else {
                   ?>
-                  <span>Курс: </span>
-                  <input class="student-item-text" type="text" name="student-course" value="<?php echo $course; ?>">
+                  <span>Логин: </span>
+                  <input class="student-item-text" type="text" name="login" value="<?php echo $login; ?>">
                   <?php
                 }
                 ?>
@@ -250,17 +242,25 @@
                 <?php
                 if (!is_admin()) {
                   ?>
-                  <span>Факультет: </span>
-                  <span class="student-item-text"><?php echo $faculty ?> </span>
+                  <span>Должность: </span>
+                  <span class="student-item-text"><?php if ($role == 'teamleader') {
+                    echo "Капитан";
+                  } else {
+                    echo "Участник";
+                  }?> </span>
                   <?php
                 } else {
                   ?>
-                  <span>Факультет: </span>
-                  <input class="student-item-text" type="text" name="student-faculty" value="<?php echo $faculty; ?>">
+                  <span>Должность: </span>
+                  <select class="student-item-text" name="role">
+                    <option value="teamleader">Капитан команды</option>
+                    <option value="teammember">Член команды</option>
+                  </select>
                   <?php
                 }
                 ?>
               </div>
+
               <?php
               if (is_admin()) {
                 ?>
@@ -269,6 +269,18 @@
                 </div>
               <?php
               }
+              ?>
+
+              <?php
+                if ($_SESSION['role'] == 'teamleader' && $student['role'] != 'teamleader') {
+                  ?>
+                  <a class="buttontodel" href="user/teammemberdelete.php?id_to_del=<?php echo $student['id']; ?>">
+                    <div>
+                      Выкинуть из команды
+                    </div>
+                  </a>
+                  <?php
+                }
               ?>
             </div>
           <?php

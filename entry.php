@@ -1,6 +1,6 @@
 <?php
   session_start();
-  $_SESSION['login'] = 0; 
+  $_SESSION['login'] = 0;
  ?>
 
 <!DOCTYPE html>
@@ -28,7 +28,7 @@
   <div class="main">
     <div class="container container-main">
       <div class="entry-form">
-        <form action="index.php" method="post">
+        <form action="main.php" method="post">
           <div class="form-container">
             <div class="form-input-div">
               <span>

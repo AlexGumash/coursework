@@ -25,7 +25,7 @@
   <div class="main">
     <div class="container container-main">
       <div class="entry-form">
-        <form action="index.php" method="post">
+        <form action="main.php" method="post">
           <div class="form-container">
             <div class="form-input-div">
               <span>
@@ -38,6 +38,12 @@
                 Фамилия:
               </span>
               <input type="text" name="surname" class="form-input">
+            </div>
+            <div class="form-input-div">
+              <span>
+                Отчество:
+              </span>
+              <input type="text" name="patronymic" class="form-input">
             </div>
             <div class="form-input-div">
               <span>

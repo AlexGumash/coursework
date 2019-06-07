@@ -2,45 +2,10 @@
 <?php include 'database/connection.php' ?>
 <?php
   include 'verify.php';
-  if (isset($_REQUEST['submit-button-registration'])) {
-    $login = $_REQUEST['login'];
-    $name = $_REQUEST['name'];
-    $surname = $_REQUEST['surname'];
-    $password = $_REQUEST['password'];
-    $password_confirm = $_REQUEST['password-confirm'];
-
-    if ($password == $password_confirm) {
-      $hash_pass = hash('md5', $password);
-      $query = "INSERT INTO users (id, name, surname, login, password, rights) VALUES (NULL, '$name', '$surname', '$login', '$hash_pass', 'user')";
-      $result = mysqli_query($date, $query);
-
-      $query = "SELECT * FROM users WHERE login = '$login' AND password = '$hash_pass'";
-      $result = mysqli_query($date, $query);
-      $user = mysqli_fetch_array($result, MYSQL_ASSOC);
-      $_SESSION['login'] = $login;
-      $_SESSION['password'] = $hash_pass;
-      $_SESSION['rights'] = $user['rights'];
-    }
-  }
-
-  if (isset($_REQUEST['submit-button-entry'])) {
-    $login = $_REQUEST['login'];
-    $password = $_REQUEST['password'];
-    $hash_pass = hash('md5', $password);
-
-    $query = "SELECT * FROM users WHERE login = '$login' AND password = '$hash_pass'";
-    $result = mysqli_query($date, $query);
-    $user = mysqli_fetch_array($result, MYSQL_ASSOC);
-    $_SESSION['login'] = $login;
-    $_SESSION['password'] = $hash_pass;
-    $_SESSION['rights'] = $user['rights'];
-  }
   if (!$_SESSION['login']) {
     header('Location: entry.php');
     session_destroy();
   }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -78,22 +43,26 @@
 
             $query = htmlspecialchars($query);
             $query = mysqli_real_escape_string($date, $query);
-
             if (is_root($query)) {
+              if (!is_drop($query)) {
 
-              if (!($query_result = mysqli_query($date, $query))) {
-                echo "<span style='padding-left: 10px; font-weight: bold;'>Ошибка в запросе!</span>";
-              } else {
-                if ($query_type[0] == 'SELECT') {
-                  $i = 1;
-                  while ($fetched_item = mysqli_fetch_array($query_result, MYSQL_ASSOC)) {
-                    echo "<span class='item'>Запись $i</span>";
-                    include 'fetched_item.php';
-                    $i = $i + 1;
-                  }
+                if (!($query_result = mysqli_query($date, $query))) {
+                  echo mysqli_error($date);
+                  echo "<span style='padding-left: 10px; font-weight: bold;'>Ошибка в запросе!</span>";
                 } else {
-                  echo "<span style='padding-left: 10px; font-weight: bold;'>Запрос успешно выполнен!</span>";
+                  if ($query_type[0] == 'SELECT') {
+                    $i = 1;
+                    while ($fetched_item = mysqli_fetch_array($query_result, MYSQL_ASSOC)) {
+                      echo "<span class='item'>Запись $i</span>";
+                      include 'fetched_item.php';
+                      $i = $i + 1;
+                    }
+                  } else {
+                    echo "<span style='padding-left: 10px; font-weight: bold;'>Запрос успешно выполнен!</span>";
+                  }
                 }
+              } else {
+                echo "<span style='padding-left: 10px; font-weight: bold;'>Нельзя удалять таблицы!</span>";
               }
             } else {
               echo "<span style='padding-left: 10px; font-weight: bold;'>Не достаточно прав!</span>";

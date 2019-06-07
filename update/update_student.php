@@ -1,8 +1,8 @@
 <?php
     include '../database/connection.php';
     $namefull = $_REQUEST['student_name'];
-    $course = $_REQUEST['student_course'];
-    $faculty = $_REQUEST['student_faculty'];
+    $login = $_REQUEST['student_login'];
+    $role = $_REQUEST['role'];
     $student_id = $_REQUEST['student_id'];
 
     $array = explode(" ", $namefull);
@@ -10,7 +10,7 @@
     $name = $array[1];
     $patr = $array[2];
 
-    $query = "UPDATE student SET faculty = '$faculty', course = '$course', surname = '$surname', name = '$name', patronymic = '$patr' WHERE id = '$student_id'";
+    $query = "UPDATE users SET role = '$role', login = '$login', surname = '$surname', name = '$name', patronymic = '$patr' WHERE id = '$student_id'";
 
     $result = mysqli_query($date, $query);
 
